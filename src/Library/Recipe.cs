@@ -9,6 +9,11 @@ using System.Collections;
 
 namespace Full_GRASP_And_SOLID.Library
 {
+    /// <summary>
+    /// Se le asigna la responsabilidad de dar la información para imprimir de una receta 
+    /// por ser el experto en la información y de calcular el costo de producción por ser el 
+    /// que conoce los pasos que necesita para la receta
+    /// </summary>
     public class Recipe
     {
         private ArrayList steps = new ArrayList();
@@ -25,16 +30,30 @@ namespace Full_GRASP_And_SOLID.Library
             this.steps.Remove(step);
         }
 
-        public string PrintRecipe()
-        {   
-            string result = "";
-            result += ($"Receta de {this.FinalProduct.Description}:\n");
-            
+        public string GetTextToPrint()
+        {
+            string result = $"Receta de {this.FinalProduct.Description}:\n";
             foreach (Step step in this.steps)
             {
-                result += ($"{step.Quantity} de '{step.Input.Description}' " +
-                    $"usando '{step.Equipment.Description}' durante {step.Time}\n");
+                result = result + step.GetTextToPrint() + "\n";
             }
+
+            // Agregado por Expert
+            result = result + $"Costo de producción: {this.GetProductionCost()}";
+
+            return result;
+        }
+
+        // Agregado por Expert
+        public double GetProductionCost()
+        {
+            double result = 0;
+
+            foreach (Step step in this.steps)
+            {
+                result = result + step.GetStepCost();
+            }
+
             return result;
         }
     }
